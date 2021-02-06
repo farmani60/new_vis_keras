@@ -45,6 +45,28 @@ def listify(value):
     return value
 
 
+def get_identifire(identifier, module_globals, module_name):
+    """Helper utility to retrieve the callable function associated with a string identifier.
+
+    Args:
+        identifier: The identifier. Could be a string or function.
+        module_globals: The global objects of the module.
+        module_name: The module name
+
+    Returns:
+        The callable associated with the identifier.
+    """
+    if isinstance(identifier, six.string_types):
+        fn = module_globals.get(identifier)
+        if fn is None:
+            raise ValueError(f"Unknown {module_name}: {identifier}")
+        return fn
+    elif callable(identifier):
+        return identifier
+    else:
+        raise ValueError("Could nt interpret identifire!")
+
+
 class _BackendAgnosticImageSlice:
     """Utility class to make image slicing uniform across various `image_data_format`.
     """
@@ -66,4 +88,3 @@ Example:
     data formats even though, in tensorflow, slice should be conv_layer[utils.slicer[:, :, :, filter_idx]]
 """
 slicer = _BackendAgnosticImageSlice()
-
